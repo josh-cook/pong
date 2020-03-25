@@ -1,2 +1,2 @@
-# pong
-A game of pong.
+# PONG
+A simple game of pong.
