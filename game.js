@@ -1,5 +1,6 @@
 const canvas = document.getElementById("gameCanvas");
 const canvasContext = canvas.getContext("2d");
+canvasContext.font = "30px Arial";
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 const startPositionX = canvasWidth / 2;
@@ -18,7 +19,7 @@ let playerOneX = 10;
 let playerTwoY = 250;
 let playerTwoX = 780;
 
-const gameOverScore = 3;
+const gameOverScore = 1;
 let playerOneScore = 0;
 let playerTwoScore = 0;
 
@@ -37,12 +38,12 @@ function initialiseGame() {
     moveAll();
   }, 1000 / framePerSecond);
 
+  canvas.addEventListener("mousedown", mouseClickHandler);
+
   canvas.addEventListener("mousemove", function(e) {
     const mousePos = calculateMousePosition(e);
     playerOneY = mousePos.y - playerHeight / 2;
   });
-
-  canvas.addEventListener("mousedown", mouseClickHandler());
 }
 
 function calculateMousePosition(e) {
@@ -61,6 +62,7 @@ function mouseClickHandler(e) {
     playerOneScore = 0;
     playerTwoScore = 0;
     showWinScreen = false;
+    resetBall();
   }
 }
 
@@ -82,7 +84,7 @@ function moveAll() {
   ballX += ballXSpeed;
   ballY += ballYSpeed;
 
-  if (ballX < playerOneX + 25) {
+  if (ballX < playerOneX + 20) {
     if (ballY > playerOneY && ballY < playerOneY + playerHeight) {
       ballXSpeed = -ballXSpeed;
       let deltaY = ballY - (playerOneY + playerHeight / 2);
@@ -94,7 +96,7 @@ function moveAll() {
     }
   }
 
-  if (ballX > playerTwoX - 20) {
+  if (ballX > playerTwoX - 10) {
     if (ballY > playerTwoY && ballY < playerTwoY + playerHeight) {
       ballXSpeed = -ballXSpeed;
       let deltaY = ballY - (playerTwoY + playerHeight / 2);
@@ -136,11 +138,11 @@ function drawBall(centreX, centreY, radius, drawColour) {
 function drawEverything() {
   if (showWinScreen) {
     if (playerOneScore >= gameOverScore) {
-      canvasContext.fillText("PLAYER 1 WON", 350, 200);
+      canvasContext.fillText("PLAYER 1 WON", 310, 200);
     } else {
-      canvasContext.fillText("Player 2 WON", 350, 200);
+      canvasContext.fillText("Player 2 WON", 310, 200);
     }
-    canvasContext.fillText("Click to continue", 350, 500);
+    canvasContext.fillText("Click to continue", 300, 500);
     return;
   }
 
