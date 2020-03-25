@@ -82,7 +82,7 @@ function moveAll() {
   ballX += ballXSpeed;
   ballY += ballYSpeed;
 
-  if (ballX < 0) {
+  if (ballX < playerOneX + 25) {
     if (ballY > playerOneY && ballY < playerOneY + playerHeight) {
       ballXSpeed = -ballXSpeed;
       let deltaY = ballY - (playerOneY + playerHeight / 2);
@@ -94,7 +94,7 @@ function moveAll() {
     }
   }
 
-  if (ballX > canvasWidth) {
+  if (ballX > playerTwoX - 20) {
     if (ballY > playerTwoY && ballY < playerTwoY + playerHeight) {
       ballXSpeed = -ballXSpeed;
       let deltaY = ballY - (playerTwoY + playerHeight / 2);
