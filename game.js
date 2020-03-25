@@ -4,18 +4,39 @@ const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 const startPositionY = canvasHeight / 2;
 const startPositionX = canvasWidth / 2;
+const playerOneScoreField = document.getElementById(
+  "score-container--player-one"
+);
+const playerTwoScoreField = document.getElementById(
+  "score-container--player-two"
+);
 
 const playerWidth = 10;
-const playerHeight = 50;
+const playerHeight = 100;
 let playerOneY = 250;
 let playerOneX = 10;
 let playerTwoY = 250;
 let playerTwoX = 780;
+let playerOneScore = 0;
+let playerTwoScore = 0;
 
 let ballX = 50;
 let ballY = 50;
 let ballXSpeed = 10;
 let ballYSpeed = 5;
+
+function initialiseGame() {
+  const framePerSecond = 30;
+  setInterval(function() {
+    moveAll();
+    drawEverything();
+  }, 1000 / framePerSecond);
+
+  canvas.addEventListener("mousemove", function(e) {
+    let mousePos = calculateMousePosition(e);
+    playerOneY = mousePos.y - playerHeight / 2;
+  });
+}
 
 function calculateMousePosition(e) {
   const rect = canvas.getBoundingClientRect();
@@ -28,30 +49,17 @@ function calculateMousePosition(e) {
   };
 }
 
-function initialiseGame() {
-  const framePerSecond = 30;
-  setInterval(function() {
-    moveBall();
-    computerMovement();
-    drawEverything();
-  }, 1000 / framePerSecond);
-
-  canvas.addEventListener("mousemove", function(e) {
-    let mousePos = calculateMousePosition(e);
-    playerOneY = mousePos.y - playerHeight / 2;
-  });
-}
-
 function computerMovement() {
   let playerCenterY = playerTwoY + playerHeight / 2;
   if (playerCenterY < ballY - 30) {
-    playerTwoY += 7;
+    playerTwoY += 10;
   } else if (playerCenterY > ballY + 30) {
-    playerTwoY -= 7;
+    playerTwoY -= 10;
   }
 }
 
-function moveBall() {
+function moveAll() {
+  computerMovement();
   ballX += ballXSpeed;
   ballY += ballYSpeed;
 
@@ -60,6 +68,8 @@ function moveBall() {
       ballXSpeed = -ballXSpeed;
     } else {
       resetBall();
+      playerTwoScore += 1;
+      playerTwoScoreField.innerHTML = `SCORE: ${playerTwoScore}`;
     }
   }
 
@@ -68,6 +78,8 @@ function moveBall() {
       ballXSpeed = -ballXSpeed;
     } else {
       resetBall();
+      playerOneScore += 1;
+      playerOneScoreField.innerHTML = `SCORE: ${playerOneScore}`;
     }
   }
 
