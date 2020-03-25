@@ -5,6 +5,7 @@ const canvasHeight = canvas.height;
 const startPosition = canvasHeight / 2;
 
 const playerWidth = 10;
+const playerHeight = 50;
 let playerOneY = 250;
 let playerOneX = 10;
 let playerTwoY = 250;
@@ -35,7 +36,7 @@ function initialiseGame() {
 
   canvas.addEventListener("mousemove", function(e) {
     let mousePos = calculateMousePosition(e);
-    playerOneY = mousePos.y;
+    playerOneY = mousePos.y - playerHeight / 2;
   });
 }
 
@@ -77,10 +78,10 @@ function drawEverything() {
   drawAsset(0, 0, canvasWidth, canvasHeight, "black");
 
   // Player 1
-  drawAsset(playerOneX, playerOneY, playerWidth, 50, "white");
+  drawAsset(playerOneX, playerOneY, playerWidth, playerHeight, "white");
 
   // Player 2
-  drawAsset(playerTwoX, startPosition, playerWidth, 50, "white");
+  drawAsset(playerTwoX, startPosition, playerWidth, playerHeight, "white");
 
   // Ball
   drawBall(ballX, ballY, 10, "red");
