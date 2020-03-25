@@ -33,7 +33,7 @@ function initialiseGame() {
   }, 1000 / framePerSecond);
 
   canvas.addEventListener("mousemove", function(e) {
-    let mousePos = calculateMousePosition(e);
+    const mousePos = calculateMousePosition(e);
     playerOneY = mousePos.y - playerHeight / 2;
   });
 }
@@ -50,7 +50,7 @@ function calculateMousePosition(e) {
 }
 
 function computerMovement() {
-  let playerCenterY = playerTwoY + playerHeight / 2;
+  const playerCenterY = playerTwoY + playerHeight / 2;
   if (playerCenterY < ballY - 30) {
     playerTwoY += 10;
   } else if (playerCenterY > ballY + 30) {
