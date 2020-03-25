@@ -1,7 +1,13 @@
 const canvas = document.getElementById("gameCanvas");
 const canvasContext = canvas.getContext("2d");
+const canvasWidth = canvas.width;
+const canvasHeight = canvas.height;
+
 let ballX = 50;
-let ballY;
+let ballXSpeed = 10;
+
+let playerOnePosition = 10;
+let playerTwoPosition = 780;
 
 function initialiseGame() {
   const framePerSecond = 30;
@@ -12,23 +18,34 @@ function initialiseGame() {
 }
 
 function moveBall() {
-  ballX += 10;
+  ballX += ballXSpeed;
+
+  if (ballX > canvasWidth) {
+    ballXSpeed = -ballXSpeed;
+  }
+
+  if (ballX < 0) {
+    ballXSpeed = -ballXSpeed;
+  }
+}
+
+function newAsset(leftX, topY, width, height, drawColour) {
+  canvasContext.fillStyle = drawColour;
+  canvasContext.fillRect(leftX, topY, width, height);
 }
 
 function drawEverything() {
-  canvasContext.fillStyle = "black";
-  canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+  // Game Canvas
+  newAsset(0, 0, canvasWidth, canvasHeight, "black");
 
   // Player 1
-  canvasContext.fillStyle = "white";
-  canvasContext.fillRect(10, 200, 10, 50);
+  newAsset(playerOnePosition, 200, 10, 50, "white");
 
   // Player 2
-  canvasContext.fillStyle = "white";
-  canvasContext.fillRect(780, 200, 10, 50);
+  newAsset(playerTwoPosition, 200, 10, 50, "white");
 
-  canvasContext.fillStyle = "red";
-  canvasContext.fillRect(ballX, 100, 10, 10);
+  // Ball
+  newAsset(ballX, 100, 10, 10, "red");
 }
 
 initialiseGame();
