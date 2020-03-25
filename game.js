@@ -17,6 +17,8 @@ let playerOneY = 250;
 let playerOneX = 10;
 let playerTwoY = 250;
 let playerTwoX = 780;
+
+const gameOverScore = 3;
 let playerOneScore = 0;
 let playerTwoScore = 0;
 
@@ -66,21 +68,25 @@ function moveAll() {
   if (ballX < 0) {
     if (ballY > playerOneY && ballY < playerOneY + playerHeight) {
       ballXSpeed = -ballXSpeed;
-    } else {
-      resetBall();
-      playerTwoScore += 1;
-      playerTwoScoreField.innerHTML = `SCORE: ${playerTwoScore}`;
+      const deltaY = ballY - (playerOneY + playerHeight / 2);
+      ballYSpeed = deltaY * 0.3;
     }
+
+    resetBall();
+    playerTwoScore += 1;
+    playerTwoScoreField.innerHTML = `SCORE: ${playerTwoScore}`;
   }
 
   if (ballX > canvasWidth) {
     if (ballY > playerTwoY && ballY < playerTwoY + playerHeight) {
       ballXSpeed = -ballXSpeed;
-    } else {
-      resetBall();
-      playerOneScore += 1;
-      playerOneScoreField.innerHTML = `SCORE: ${playerOneScore}`;
+      const deltaY = ballY - (playerOneY + playerHeight / 2);
+      ballYSpeed = deltaY * 0.3;
     }
+
+    playerOneScore += 1;
+    playerOneScoreField.innerHTML = `SCORE: ${playerOneScore}`;
+    resetBall();
   }
 
   if (ballY > canvasHeight) {
@@ -119,8 +125,17 @@ function drawEverything() {
 }
 
 function resetBall() {
+  if (playerOneScore === gameOverScore || playerTwoScore === gameOverScore) {
+    gameOver();
+  }
+
+  ballXSpeed -= ballXSpeed;
   ballX = startPositionX;
   ballY = startPositionY;
+}
+
+function gameOver() {
+  // stop interval and show winner
 }
 
 initialiseGame();
