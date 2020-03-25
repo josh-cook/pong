@@ -4,11 +4,27 @@ const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 const startPosition = canvasHeight / 2;
 
-let playerOnePosition = 10;
-let playerTwoPosition = 780;
+const playerWidth = 10;
+let playerOneY = 250;
+let playerOneX = 10;
+let playerTwoY = 250;
+let playerTwoX = 780;
 
 let ballX = 50;
+let ballY = 50;
 let ballXSpeed = 10;
+let ballYSpeed = 5;
+
+function calculateMousePosition(e) {
+  const rect = canvas.getBoundingClientRect();
+  const root = document.documentElement;
+  const mouseX = e.clientX - rect.left - root.scrollLeft;
+  const mouseY = e.clientY - rect.top - root.scrollTop;
+  return {
+    x: mouseX,
+    y: mouseY
+  };
+}
 
 function initialiseGame() {
   const framePerSecond = 30;
@@ -16,17 +32,31 @@ function initialiseGame() {
     moveBall();
     drawEverything();
   }, 1000 / framePerSecond);
+
+  canvas.addEventListener("mousemove", function(e) {
+    let mousePos = calculateMousePosition(e);
+    playerOneY = mousePos.y;
+  });
 }
 
 function moveBall() {
   ballX += ballXSpeed;
+  ballY += ballYSpeed;
 
-  if (ballX > playerOnePosition) {
+  if (ballX > playerOneX) {
     ballXSpeed = -ballXSpeed;
   }
 
-  if (ballX < playerTwoPosition) {
+  if (ballX < playerTwoX) {
     ballXSpeed = -ballXSpeed;
+  }
+
+  if (ballY > canvasHeight) {
+    ballYSpeed = -ballYSpeed;
+  }
+
+  if (ballY < 0) {
+    ballYSpeed = -ballYSpeed;
   }
 }
 
@@ -47,13 +77,13 @@ function drawEverything() {
   drawAsset(0, 0, canvasWidth, canvasHeight, "black");
 
   // Player 1
-  drawAsset(playerOnePosition, startPosition, 10, 50, "white");
+  drawAsset(playerOneX, playerOneY, playerWidth, 50, "white");
 
   // Player 2
-  drawAsset(playerTwoPosition, startPosition, 10, 50, "white");
+  drawAsset(playerTwoX, startPosition, playerWidth, 50, "white");
 
   // Ball
-  drawBall(ballX, startPosition + 15, 10, "red");
+  drawBall(ballX, ballY, 10, "red");
 }
 
 initialiseGame();
