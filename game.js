@@ -2,8 +2,8 @@ const canvas = document.getElementById("gameCanvas");
 const canvasContext = canvas.getContext("2d");
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
-const startPositionY = canvasHeight / 2;
 const startPositionX = canvasWidth / 2;
+const startPositionY = canvasHeight / 2;
 const playerOneScoreField = document.getElementById(
   "score-container--player-one"
 );
@@ -27,17 +27,22 @@ let ballY = 50;
 let ballXSpeed = 10;
 let ballYSpeed = 5;
 
+let showWinScreen = false;
+
 function initialiseGame() {
   const framePerSecond = 30;
+
   setInterval(function() {
-    moveAll();
     drawEverything();
+    moveAll();
   }, 1000 / framePerSecond);
 
   canvas.addEventListener("mousemove", function(e) {
     const mousePos = calculateMousePosition(e);
     playerOneY = mousePos.y - playerHeight / 2;
   });
+
+  canvas.addEventListener("mousedown", mouseClickHandler());
 }
 
 function calculateMousePosition(e) {
@@ -51,6 +56,14 @@ function calculateMousePosition(e) {
   };
 }
 
+function mouseClickHandler(e) {
+  if (showWinScreen) {
+    playerOneScore = 0;
+    playerTwoScore = 0;
+    showWinScreen = false;
+  }
+}
+
 function computerMovement() {
   const playerCenterY = playerTwoY + playerHeight / 2;
   if (playerCenterY < ballY - 30) {
@@ -61,6 +74,10 @@ function computerMovement() {
 }
 
 function moveAll() {
+  if (showWinScreen) {
+    return;
+  }
+
   computerMovement();
   ballX += ballXSpeed;
   ballY += ballYSpeed;
@@ -68,25 +85,25 @@ function moveAll() {
   if (ballX < 0) {
     if (ballY > playerOneY && ballY < playerOneY + playerHeight) {
       ballXSpeed = -ballXSpeed;
-      const deltaY = ballY - (playerOneY + playerHeight / 2);
-      ballYSpeed = deltaY * 0.3;
+      let deltaY = ballY - (playerOneY + playerHeight / 2);
+      ballYSpeed = deltaY * 0.35;
+    } else {
+      playerTwoScore += 1;
+      playerTwoScoreField.innerHTML = `SCORE: ${playerTwoScore}`;
+      resetBall();
     }
-
-    resetBall();
-    playerTwoScore += 1;
-    playerTwoScoreField.innerHTML = `SCORE: ${playerTwoScore}`;
   }
 
   if (ballX > canvasWidth) {
     if (ballY > playerTwoY && ballY < playerTwoY + playerHeight) {
       ballXSpeed = -ballXSpeed;
-      const deltaY = ballY - (playerOneY + playerHeight / 2);
-      ballYSpeed = deltaY * 0.3;
+      let deltaY = ballY - (playerTwoY + playerHeight / 2);
+      ballYSpeed = deltaY * 0.35;
+    } else {
+      playerOneScore += 1;
+      playerOneScoreField.innerHTML = `SCORE: ${playerOneScore}`;
+      resetBall();
     }
-
-    playerOneScore += 1;
-    playerOneScoreField.innerHTML = `SCORE: ${playerOneScore}`;
-    resetBall();
   }
 
   if (ballY > canvasHeight) {
@@ -103,6 +120,12 @@ function drawAsset(leftX, topY, width, height, drawColour) {
   canvasContext.fillRect(leftX, topY, width, height);
 }
 
+function drawNet() {
+  for (let i = 0; i < canvasHeight; i += 40) {
+    drawAsset(canvasWidth / 2 - 1, i, 2, 20, "white");
+  }
+}
+
 function drawBall(centreX, centreY, radius, drawColour) {
   canvasContext.fillStyle = drawColour;
   canvasContext.beginPath();
@@ -111,8 +134,20 @@ function drawBall(centreX, centreY, radius, drawColour) {
 }
 
 function drawEverything() {
+  if (showWinScreen) {
+    if (playerOneScore >= gameOverScore) {
+      canvasContext.fillText("PLAYER 1 WON", 350, 200);
+    } else {
+      canvasContext.fillText("Player 2 WON", 350, 200);
+    }
+    canvasContext.fillText("Click to continue", 350, 500);
+    return;
+  }
+
   // Game Canvas
   drawAsset(0, 0, canvasWidth, canvasHeight, "black");
+
+  drawNet();
 
   // Player 1
   drawAsset(playerOneX, playerOneY, playerWidth, playerHeight, "white");
@@ -125,17 +160,13 @@ function drawEverything() {
 }
 
 function resetBall() {
-  if (playerOneScore === gameOverScore || playerTwoScore === gameOverScore) {
-    gameOver();
+  if (playerOneScore >= gameOverScore || playerTwoScore >= gameOverScore) {
+    showWinScreen = true;
   }
 
-  ballXSpeed -= ballXSpeed;
+  ballXSpeed = -ballXSpeed;
   ballX = startPositionX;
   ballY = startPositionY;
-}
-
-function gameOver() {
-  // stop interval and show winner
 }
 
 initialiseGame();
