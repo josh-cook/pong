@@ -2,7 +2,8 @@ const canvas = document.getElementById("gameCanvas");
 const canvasContext = canvas.getContext("2d");
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
-const startPosition = canvasHeight / 2;
+const startPositionY = canvasHeight / 2;
+const startPositionX = canvasWidth / 2;
 
 const playerWidth = 10;
 const playerHeight = 50;
@@ -31,6 +32,7 @@ function initialiseGame() {
   const framePerSecond = 30;
   setInterval(function() {
     moveBall();
+    computerMovement();
     drawEverything();
   }, 1000 / framePerSecond);
 
@@ -40,16 +42,33 @@ function initialiseGame() {
   });
 }
 
+function computerMovement() {
+  let playerCenterY = playerTwoY + playerHeight / 2;
+  if (playerCenterY < ballY - 30) {
+    playerTwoY += 7;
+  } else if (playerCenterY > ballY + 30) {
+    playerTwoY -= 7;
+  }
+}
+
 function moveBall() {
   ballX += ballXSpeed;
   ballY += ballYSpeed;
 
-  if (ballX > playerOneX) {
-    ballXSpeed = -ballXSpeed;
+  if (ballX < 0) {
+    if (ballY > playerOneY && ballY < playerOneY + playerHeight) {
+      ballXSpeed = -ballXSpeed;
+    } else {
+      resetBall();
+    }
   }
 
-  if (ballX < playerTwoX) {
-    ballXSpeed = -ballXSpeed;
+  if (ballX > canvasWidth) {
+    if (ballY > playerTwoY && ballY < playerTwoY + playerHeight) {
+      ballXSpeed = -ballXSpeed;
+    } else {
+      resetBall();
+    }
   }
 
   if (ballY > canvasHeight) {
@@ -81,10 +100,15 @@ function drawEverything() {
   drawAsset(playerOneX, playerOneY, playerWidth, playerHeight, "white");
 
   // Player 2
-  drawAsset(playerTwoX, startPosition, playerWidth, playerHeight, "white");
+  drawAsset(playerTwoX, playerTwoY, playerWidth, playerHeight, "white");
 
   // Ball
   drawBall(ballX, ballY, 10, "red");
+}
+
+function resetBall() {
+  ballX = startPositionX;
+  ballY = startPositionY;
 }
 
 initialiseGame();
