@@ -15,11 +15,11 @@ const playerTwoScoreField = document.getElementById(
 const playerWidth = 10;
 const playerHeight = 100;
 let playerOneY = 250;
-let playerOneX = 10;
+let playerOneX = 0;
 let playerTwoY = 250;
-let playerTwoX = 780;
+let playerTwoX = 790;
 
-const gameOverScore = 1;
+const gameOverScore = 3;
 let playerOneScore = 0;
 let playerTwoScore = 0;
 
@@ -30,13 +30,15 @@ let ballYSpeed = 5;
 
 let showWinScreen = false;
 
-function initialiseGame() {
-  const framePerSecond = 30;
+function frame() {
+  drawEverything();
+  moveAll();
 
-  setInterval(function() {
-    drawEverything();
-    moveAll();
-  }, 1000 / framePerSecond);
+  requestAnimationFrame(frame);
+}
+
+function initialiseGame() {
+  requestAnimationFrame(frame);
 
   canvas.addEventListener("mousedown", mouseClickHandler);
 
@@ -68,7 +70,7 @@ function mouseClickHandler(e) {
 
 function computerMovement() {
   const playerCenterY = playerTwoY + playerHeight / 2;
-  if (playerCenterY < ballY - 30) {
+  if (playerCenterY < ballY - 20) {
     playerTwoY += 10;
   } else if (playerCenterY > ballY + 30) {
     playerTwoY -= 10;
@@ -84,7 +86,7 @@ function moveAll() {
   ballX += ballXSpeed;
   ballY += ballYSpeed;
 
-  if (ballX < playerOneX + 20) {
+  if (ballX < playerOneX) {
     if (ballY > playerOneY && ballY < playerOneY + playerHeight) {
       ballXSpeed = -ballXSpeed;
       let deltaY = ballY - (playerOneY + playerHeight / 2);
@@ -96,7 +98,7 @@ function moveAll() {
     }
   }
 
-  if (ballX > playerTwoX - 10) {
+  if (ballX > playerTwoX) {
     if (ballY > playerTwoY && ballY < playerTwoY + playerHeight) {
       ballXSpeed = -ballXSpeed;
       let deltaY = ballY - (playerTwoY + playerHeight / 2);
