@@ -6,6 +6,8 @@
 html, body {
   height: 100%;
   font-family: 'PongFont';
+  color: white;
+  background-color: black;
 }
 
 .heading-container {
